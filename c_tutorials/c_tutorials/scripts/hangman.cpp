@@ -1,5 +1,8 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <algorithm>
+#include <ctime>
 using namespace std;
 
 
@@ -11,18 +14,19 @@ private:
     int numLives = 10;
 
 public:
-    void startGame();
+    void startGame(vector<string> dictionary);
     void endGame();
     void guessLetter();
     void writeDictionary(); // Dummy function that was used as a test for writing to a file
-    void loadDictionary();
+    vector<string> loadDictionary();
 };
 
-void Game::startGame(){
-    cout << "Starting game..." << endl;
+void Game::startGame(vector<string> dictionary){
     cout << "Guess a letter" << endl;
-    // somehow need to get a random word here
-
+    srand(time(0));
+    int random_pos = rand() % dictionary.size();
+    cout << random_pos << endl;
+    cout << dictionary[random_pos] << endl;
 };
 
 void Game::writeDictionary(){
@@ -37,18 +41,29 @@ void Game::writeDictionary(){
     }
 }
 
-void Game::loadDictionary(){
+vector<string> Game::loadDictionary(){
     cout << "Loading dictionary..." << endl;
     fstream newfile;
+    vector<string> words;
     
     newfile.open("dictionary.txt",ios::in);
     if (newfile.is_open()){
         string tp;
+        int idx = 0;
         while(getline(newfile,tp)){
-            cout << tp << "\n";
+            words.push_back(tp);
+            idx += 1;
         }
+        
+        // for(auto i=words.begin(); i != words.end(); ++i)
+        //     cout << *i << " " << "\n";
+        
         newfile.close();
+        cout << "Dictionary successfully loaded" << endl;
     }
+    return words;
+
+
     // std::ifstream infile("dictionary.txt");
 
 };
@@ -56,7 +71,7 @@ void Game::loadDictionary(){
 int main(){
     Game game;
     // game.startGame();
-    game.loadDictionary();
-    
-
+    vector<string> dictionary;
+    dictionary = game.loadDictionary();
+    game.startGame(dictionary);
 }
